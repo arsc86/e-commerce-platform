@@ -1,0 +1,176 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>           
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="categories" 
+                         [columns]="cols" responsiveLayout="scroll" 
+                         [globalFilterFields]="['name', 'providerCode', 'parentName', 'createdBy', 'createdAt', 'updatedAt', 'status']"
+                         [rows]="10"                           
+                         [paginator]="true" 
+                         [rowsPerPageOptions]="[10,20,30]" 
+                         [showCurrentPageReport]="true" 
+                         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                         [(selection)]="selectedCategories" 
+                         selectionMode="multiple" 
+                         [rowHover]="true" dataKey="id"
+                         [loading]="loading">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:align-items-center md:justify-content-between">
+                        <div class="flex align-items-center gap-3">
+                            <h5 class="m-0">Manage Category</h5>
+                            <p-dropdown *ngIf="role === 'ADMIN'"
+                                [options]="providerTypes" 
+                                [(ngModel)]="category.providerCode" 
+                                optionLabel="label" 
+                                optionValue="value"
+                                placeholder="Select a provider"
+                                inputId="providerCode" 
+                                [ngClass]="{'ng-invalid ng-dirty': submitted && !category.providerCode}"
+                                (onChange)="onSearchProviderFilter($event)">
+                            </p-dropdown>
+                        </div>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" 
+                                   (input)="onGlobalFilter(dt, $event)" 
+                                   placeholder="Search..."  class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>                     
+                        <th pSortableColumn="name" style="display: none;">Code</th>
+                        <th pSortableColumn="name" style="display: none;">Parent Id</th>
+                        <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th> 
+                        <th pSortableColumn="name">Provider Code <p-sortIcon field="providerCode"></p-sortIcon></th>
+                        <th pSortableColumn="name">Parent Category <p-sortIcon field="category"></p-sortIcon></th>                                            
+                        <th pSortableColumn="price">Created By<p-sortIcon field="createdBy"></p-sortIcon></th>  
+                        <th pSortableColumn="price">Created At<p-sortIcon field="createdAt"></p-sortIcon></th> 
+                        <th pSortableColumn="price">Updated At<p-sortIcon field="updatedAt"></p-sortIcon></th>
+                        <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-category>
+                    <tr>
+                        <td style="display: none;">
+                            <span class="p-column-title">Code</span>
+                            {{category.id}}
+                        </td>
+                        <td style="display: none;">
+                            <span class="p-column-title">Parent Id</span>
+                            {{category.parentId}}
+                        </td> 
+                        <td style="width:14%; min-width:12rem;">
+                            <span class="p-column-title">Name</span>
+                            {{category.name}}
+                        </td>  
+                        <td style="width:14%; min-width:12rem;">
+                            <span class="p-column-title">Provider Code</span>
+                            {{category.providerCode}}
+                        </td>
+                        <td style="width:14%; min-width:15rem;">
+                            <span class="p-column-title">Parent Category</span>
+                            {{category.parentName}}
+                        </td>                        
+                        <td style="width:14%; min-width:12rem;">
+                            <span class="p-column-title">Created By</span>
+                            {{category.createdBy}}
+                        </td>  
+                        <td style="width:14%; min-width:12rem;">
+                            <span class="p-column-title">Created At</span>
+                            {{category.createdAt}}
+                        </td>  
+                        <td style="width:14%; min-width:12rem;">
+                            <span class="p-column-title">Updated At</span>
+                            {{category.updatedAt}}
+                        </td>                                                            
+                        <td style="width:14%; min-width: 12rem;">
+                            <span class="p-column-title">Status</span>
+                            <span [class]="'status-badge status-' + (category.status ? category.status.toLowerCase() : '')">{{category.status}}</span>
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editCategory(category)"
+                                        [disabled]="category.status !== 'active'">
+                                </button>
+                                <button pButton pRipple icon="pi pi-trash"  class="p-button-rounded p-button-warning" (click)="deleteCategory(category)"
+                                        [disabled]="category.status === 'inactive'">
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="categoryDialog" 
+                  [style]="{width: '450px', height: '600px'}" header="Category" 
+                  [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content"> 
+                
+                    <div class="field">
+                        <label for="firstName">Name</label>
+                        <input type="text" pInputText id="firstName" [(ngModel)]="category.name" required autofocus 
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !category.name}"/>
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !category.name">Name is required.</small>
+                    </div>
+                    <div class="field">
+                        <label for="userType">Parent Category</label>
+                        <p-dropdown 
+                            [options]="parentCategories" 
+                            [(ngModel)]="category.categoryId" 
+                            optionLabel="label" 
+                            optionValue="value"
+                            placeholder="Select a parent Category"
+                            inputId="parentCategory"
+                            [ngClass]="{'ng-invalid ng-dirty': submitted && !category.categoryId}">
+                        </p-dropdown>
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !category.categoryId">Parent Category is required.</small>
+                    </div>
+                    <div class="field">
+                        <label for="userType">Provider Code</label>
+                        <p-dropdown 
+                            [options]="providers" 
+                            [(ngModel)]="category.providerCode" 
+                            optionLabel="label" 
+                            optionValue="value"
+                            placeholder="Select a provider"
+                            inputId="providerCode" 
+                            [ngClass]="{'ng-invalid ng-dirty': submitted && !category.providerCode}">
+                        </p-dropdown>
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !category.providerCode">Provider is required.</small>
+                    </div>           
+                         
+            </ng-template>
+                    
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+                <button *ngIf="isNewCategory" pButton pRipple label="Create" icon="pi pi-check" class="p-button-text" (click)="saveCategory()"></button>
+                <button *ngIf="!isNewCategory" pButton pRipple label="Update" icon="pi pi-check" class="p-button-text" (click)="saveCategory()"></button>
+            </ng-template>
+        </p-dialog>  
+
+        <p-dialog [(visible)]="deleteCategoryDialog" header="Confirm" 
+                  [modal]="true" 
+                  [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span *ngIf="category">Are you sure you want to delete the category <b>{{category.name}}</b>?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="hideDialog()"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDelete()"></button>
+            </ng-template>
+        </p-dialog>
+        
+    </div>
+</div>

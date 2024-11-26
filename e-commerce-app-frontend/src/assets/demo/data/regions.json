@@ -1,0 +1,9 @@
+{
+    "data": [
+        {"label": "Americas", "code": "Americas"},
+        {"label": "Europe", "code": "Europe"},
+        {"label": "Asia", "code": "Asia"},
+        {"label": "Africa", "code": "Africa"},
+        {"label": "Oceania", "code": "Oceania"}
+    ]
+}

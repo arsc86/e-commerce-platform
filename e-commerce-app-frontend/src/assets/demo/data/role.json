@@ -1,0 +1,22 @@
+{
+	"data": [
+		{
+			"id": "1",
+			"name": "ADMIN",
+			"status": "Active",
+			"created": "01-05-2024"			
+		},
+		{
+			"id": "2",
+			"name": "USER",
+			"status": "Active",
+			"created": "01-05-2024"	
+		},
+		{
+			"id": "3",
+			"name": "PROVIDER",
+			"status": "Active",
+			"created": "01-05-2024"	
+		}
+	]
+}

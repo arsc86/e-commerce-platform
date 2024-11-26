@@ -1,0 +1,213 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>           
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="users" 
+                         [columns]="cols" responsiveLayout="scroll" 
+                         [rows]="10"                           
+                         [paginator]="true" 
+                         [rowsPerPageOptions]="[10,20,30]" 
+                         [showCurrentPageReport]="true" 
+                         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                         [(selection)]="selectedUsers" 
+                         selectionMode="multiple" 
+                         [rowHover]="true" dataKey="id"
+                         [loading]="loading">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:align-items-center md:justify-content-between">
+                        <div class="flex align-items-center gap-3">
+                            <h5 class="m-0">Manage Users</h5>
+                            <p-dropdown 
+                                [options]="filteredUserTypes" 
+                                [(ngModel)]="user.role" 
+                                optionLabel="label" 
+                                optionValue="value"
+                                placeholder="Search by Role"
+                                inputId="userType"
+                                [ngClass]="{'ng-invalid ng-dirty': submitted && !user.role}"
+                                (onChange)="onRoleFilterChange($event)">
+                            </p-dropdown>
+                        </div>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" 
+                                   (input)="onGlobalFilter(dt, $event)" 
+                                   placeholder="Search..."  class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>                     
+                        <th pSortableColumn="name" style="display: none;">Code</th>
+                        <th pSortableColumn="name">First name <p-sortIcon field="firstname"></p-sortIcon></th> 
+                        <th pSortableColumn="name">Last name <p-sortIcon field="lastname"></p-sortIcon></th>
+                        <th pSortableColumn="name">Username <p-sortIcon field="username"></p-sortIcon></th> 
+                        <th pSortableColumn="name">Roles <p-sortIcon field="roles"></p-sortIcon></th>
+                        <th pSortableColumn="name">e-mail <p-sortIcon field="email"></p-sortIcon></th>                      
+                        <th pSortableColumn="price">Created At<p-sortIcon field="created"></p-sortIcon></th>  
+                        <th pSortableColumn="price">Updated At<p-sortIcon field="updated"></p-sortIcon></th>                     
+                        <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-user>
+                    <tr>
+                        <td style="display: none;">
+                            <span class="p-column-title">Code</span>
+                            {{user.id}}
+                        </td>
+                        <td style="width:14%; min-width:12rem;">
+                            <span class="p-column-title">First Name</span>
+                            {{user.firstName}}
+                        </td>  
+                        <td style="width:14%; min-width:12rem;">
+                            <span class="p-column-title">Last Name</span>
+                            {{user.lastName}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Username</span>
+                            {{user.username}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Roles</span>
+                            <ng-container *ngIf="user.roles && user.roles.length">
+                                <span *ngFor="let role of user.roles; let last = last">
+                                    {{role.name}}{{!last ? ', ' : ''}}
+                                </span>
+                            </ng-container>
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">E-mail</span>
+                            {{user.profile.email}}
+                        </td>
+                        <td style="width:14%; min-width:12rem;">
+                            <span class="p-column-title">Created At</span>
+                            {{user.createdAt}}
+                        </td>   
+                        <td style="width:14%; min-width:12rem;">
+                            <span class="p-column-title">Updated At</span>
+                            {{user.updatedAt}}
+                        </td>                                            
+                        <td style="width:14%; min-width: 12rem;">
+                            <span class="p-column-title">Status</span>
+                            <span [class]="'status-badge status-' + (user.status ? user.status.toLowerCase() : '')">{{user.status}}</span>
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editUser(user)"
+                                        [disabled]="user.status !== 'active'">
+                                </button>
+                                <button pButton pRipple icon="pi pi-trash"  class="p-button-rounded p-button-warning" (click)="deleteUser(user)"
+                                        [disabled]="user.status === 'inactive'">
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="userDialog" 
+                  [style]="{width: '650px', height: '450px'}" header="User" 
+                  [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <div class="form-grid" style="display: flex; gap: 1rem;">
+                    
+                    <!-- Columna izquierda -->
+                    <div style="flex: 1;">
+                    <div class="field">
+                        <label for="firstName">First Name</label>
+                        <input type="text" pInputText id="firstName" [(ngModel)]="user.firstName" required autofocus
+                        [ngClass]="{'ng-invalid ng-dirty': submitted && !user.firstName}" />
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !user.firstName">First Name is required.</small>
+                    </div>
+
+                    <div class="field">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" pInputText id="lastName" [(ngModel)]="user.lastName" required
+                        [ngClass]="{'ng-invalid ng-dirty': submitted && !user.lastName}" />
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !user.lastName">Last Name is required.</small>
+                    </div>
+
+                    <div class="field">
+                        <label for="username">Username</label>
+                        <input type="text" pInputText id="username" [(ngModel)]="user.username" required
+                        [ngClass]="{'ng-invalid ng-dirty': submitted && !user.username}" />
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !user.username">Username is required.</small>
+                    </div>
+                    </div>
+
+                    <!-- Columna derecha -->
+                    <div style="flex: 1;">
+                    <div class="field">
+                        <label for="email">Email</label>
+                        <input type="text" pInputText id="email" [(ngModel)]="user.profile.email" required
+                        [ngClass]="{'ng-invalid ng-dirty': submitted && !user.profile?.email}" />
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !user.profile?.email">Email is required.</small>
+                    </div>
+
+                    <div class="field">
+                        <label for="userType">User Role</label>
+                        <p-dropdown 
+                        [options]="userTypes" 
+                        [(ngModel)]="user.role" 
+                        optionLabel="label" 
+                        optionValue="value"
+                        placeholder="Select a user type"
+                        inputId="userType"
+                        [ngClass]="{'ng-invalid ng-dirty': submitted && !user.role}"
+                        (onChange)="onRoleChange($event)">
+                        </p-dropdown>
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !user.role">User Type is required.</small>
+                    </div>
+
+                    <div class="field">
+                        <label for="provider">Provider</label>
+                        <p-dropdown 
+                            [options]="providerTypes" 
+                            [(ngModel)]="user.profile.providerCode" 
+                            optionLabel="label" 
+                            optionValue="value"
+                            placeholder="Select a provider"
+                            inputId="provider"
+                            [ngClass]="{'ng-invalid ng-dirty': submitted && user.role === 'PROVIDER' && !user.profile.providerCode}"
+                            [disabled]="user.role !== 'PROVIDER'">
+                        </p-dropdown>
+                        <small class="ng-dirty ng-invalid"
+                        *ngIf="submitted && user.role === 'PROVIDER' && !user.profile.providerCode">Provider is required.</small>
+                    </div>
+                    </div>
+
+                </div>
+                </ng-template>
+                    
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+                <button *ngIf="isNewUser" pButton pRipple label="Create" icon="pi pi-check" class="p-button-text" (click)="saveUser()"></button>
+                <button *ngIf="!isNewUser" pButton pRipple label="Update" icon="pi pi-check" class="p-button-text" (click)="saveUser()"></button>
+            </ng-template>
+        </p-dialog>  
+
+        <p-dialog [(visible)]="deleteUserDialog" header="Confirm" 
+                  [modal]="true" 
+                  [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span *ngIf="user">Are you sure you want to delete the user <b>{{user.username}}</b>?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="hideDialog()"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDelete()"></button>
+            </ng-template>
+        </p-dialog>
+        
+    </div>
+</div>

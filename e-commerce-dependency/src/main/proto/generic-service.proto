@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+
+option java_multiple_files = true;
+option java_package = "net.project.ecommerce.dependency.grpc.configuration";
+
+message GrpcRequest{
+  google.protobuf.Any data = 1;
+}
+message GrpcResponse {
+  google.protobuf.Any data = 1;
+}
+
+service GrpcEcommerceGenericService {
+  rpc getData(GrpcRequest) returns (GrpcResponse) {};
+}
+

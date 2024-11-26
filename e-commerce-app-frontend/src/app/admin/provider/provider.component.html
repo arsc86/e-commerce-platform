@@ -1,0 +1,127 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>           
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="providers" 
+                         [columns]="cols" responsiveLayout="scroll" 
+                         [rows]="10" 
+                         [globalFilterFields]="['name','country.name','representative.name','status']" 
+                         [paginator]="true" 
+                         [rowsPerPageOptions]="[10,20,30]" 
+                         [showCurrentPageReport]="true" 
+                         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                         [(selection)]="selectedProviders" 
+                         selectionMode="multiple" 
+                         [rowHover]="true" dataKey="id"
+                         [loading]="loading">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center" >
+                        <h5 class="m-0">Manage Providers</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left" >
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" 
+                                   (input)="onGlobalFilter(dt, $event)" 
+                                   placeholder="Search..."  class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>                    
+                        <th pSortableColumn="name" style="display: none;">id</th>
+                        <th pSortableColumn="name">Code <p-sortIcon field="name"></p-sortIcon></th> 
+                        <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>                                             
+                        <th pSortableColumn="price">Created At<p-sortIcon field="created"></p-sortIcon></th>                       
+                        <th pSortableColumn="price">Updated At<p-sortIcon field="created"></p-sortIcon></th>                       
+                        <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-provider>
+                    <tr>
+                        <td style="width:14%; min-width:10rem;" style="display: none;">
+                            <span class="p-column-title">id</span>
+                            {{provider.id}}
+                        </td>
+                        <td style="width:14%; min-width:15rem;">
+                            <span class="p-column-title">Parent</span>
+                            {{provider.providerCode}}
+                        </td>  
+                        <td style="width:14%; min-width:15rem;">
+                            <span class="p-column-title">Name</span>
+                            {{provider.name}}
+                        </td>  
+                        <td style="width:14%; min-width:15rem;">
+                            <span class="p-column-title">Created At</span>
+                            {{provider.createdAt}}
+                        </td>   
+                        <td style="width:14%; min-width:15rem;">
+                            <span class="p-column-title">Updated At</span>
+                            {{provider.updatedAt}}
+                        </td>                                           
+                        <td style="width:14%; min-width: 15rem;">
+                            <span class="p-column-title">Status</span>
+                            <span [class]="'status-badge status-' + (provider.status ? provider.status.toLowerCase() : '')">{{provider.status}}</span>
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editProvider(provider)"
+                                        [disabled]="provider.status !== 'active'">
+                                </button>
+                                <button pButton pRipple icon="pi pi-trash"  class="p-button-rounded p-button-warning" (click)="deleteProvider(provider)"
+                                        [disabled]="provider.status === 'inactive'">
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="providerDialog" 
+                  [style]="{width: '450px'}" header="Provider" 
+                  [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">                                  
+                   
+                <div class="field">
+                    <label for="providerCode">Code</label>
+                    <input type="text" pInputText id="providerCode" [(ngModel)]="provider.providerCode" required autofocus 
+                           [ngClass]="{'ng-invalid ng-dirty' : submitted && !provider.providerCode}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !provider.providerCode">Code is required.</small>
+                </div>
+                <div class="field">
+                    <label for="name">Name</label>
+                    <input type="text" pInputText id="name" [(ngModel)]="provider.name" required autofocus 
+                           [ngClass]="{'ng-invalid ng-dirty' : submitted && !provider.name}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !provider.name">Name is required.</small>
+                </div> 
+            </ng-template>
+                    
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+                <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveProvider()"></button>
+            </ng-template>
+        </p-dialog>  
+
+        <p-dialog [(visible)]="deleteProviderDialog" header="Confirm" 
+                  [modal]="true" 
+                  [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span *ngIf="provider">Are you sure you want to delete the provider : <b>{{provider.name}}</b>?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="hideDialog()"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDelete()"></button>
+            </ng-template>
+        </p-dialog>
+        
+    </div>
+</div>

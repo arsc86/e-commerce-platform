@@ -1,0 +1,54 @@
+<div class="col-12">
+    <div class="card">
+        <h5>User Registration</h5>
+        <p>
+            Please enter your information to register as a user.
+        </p>
+        <div class="p-fluid p-formgrid grid">
+
+            <div class="field col-12 md:col-6">
+                <label htmlFor="firstname">Firstname</label>
+                <input pInputText id="firstname" type="text" 
+                [(ngModel)]="user.firstName" required/>
+            </div>
+            <div class="field col-12 md:col-6">
+                <label htmlFor="lastname">Lastname</label>
+                <input pInputText id="lastname" type="text" 
+                [(ngModel)]="user.lastName" required=""/>
+            </div>
+            <div class="field col-12 md:col-6">
+                <label htmlFor="username">Username</label>
+                <input pInputText id="username" type="text"
+                [(ngModel)]="user.username" required="" />
+            </div>
+            <div class="field col-12 md:col-6">
+                <label htmlFor="email">Email</label>
+                <input pInputText id="email" type="text" 
+                [(ngModel)]="user.profile.email" required=""/>
+            </div>
+            
+            <div class="field col-12 md:col-6">
+                <label htmlFor="password">Password</label>
+                <p-password 
+                        id="password" 
+                        [(ngModel)]="user.password"
+                        required                                            
+                        [toggleMask]="true" 
+                        styleClass="mb-5" 
+                        inputStyleClass="w-full p-3 md:w-30rem">
+                </p-password>
+            </div>
+
+            <div class="field col-12 md:col-6"></div>
+
+            <div class="field col-12 md:col-3">
+                <button pButton pRipple label="Sign Up" 
+                        class="p-3 text-xl" 
+                        (click)="signUp()" 
+                        [disabled]="isLoading">
+                </button>
+            </div>
+                       
+        </div>
+    </div>
+</div>

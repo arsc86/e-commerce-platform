@@ -1,0 +1,122 @@
+{"properties": [
+  {
+    "name": "path.webservice.base",
+    "type": "java.lang.String",
+    "description": "A description for 'path.webservice.base'"
+  },
+  {
+    "name": "security.cipher.key",
+    "type": "java.lang.String",
+    "description": "A description for 'security.cipher.key'"
+  },
+  {
+    "name": "security.token.expiration.time",
+    "type": "java.lang.String",
+    "description": "A description for 'security.token.expiration.time'"
+  },
+  {
+    "name": "security.token.key",
+    "type": "java.lang.String",
+    "description": "A description for 'security.token.key'"
+  },
+  {
+    "name": "security.exception,uri",
+    "type": "java.lang.String",
+    "description": "A description for 'security.exception,uri'"
+  },
+  {
+    "name": "security.exception.uri",
+    "type": "java.lang.String",
+    "description": "A description for 'security.exception.uri'"
+  },
+  {
+    "name": "security.exception.uri",
+    "type": "java.lang.String",
+    "description": "A description for 'security.exception.uri'"
+  },
+  {
+    "name": "security.cors.origin",
+    "type": "java.lang.String",
+    "description": "A description for 'security.cors.origin'"
+  },
+  {
+    "name": "security.token.recovery.password.expiration.time",
+    "type": "java.lang.String",
+    "description": "A description for 'security.token.recovery.password.expiration.time'"
+  },
+  {
+    "name": "grpc.client-server.map",
+    "type": "java.lang.String",
+    "description": "A description for 'grpc.client-server.map'"
+  },
+  {
+    "name": "grpc.client.timeout.idle",
+    "type": "java.lang.String",
+    "description": "A description for 'grpc.client.timeout.idle'"
+  },
+  {
+    "name": "grpc.client.timeout.deadline-after",
+    "type": "java.lang.String",
+    "description": "A description for 'grpc.client.timeout.deadline-after'"
+  },
+  {
+    "name": "grpc.client.timeout.deadline",
+    "type": "java.lang.String",
+    "description": "A description for 'grpc.client.timeout.deadline'"
+  },
+  {
+    "name": "grpc.client.server.map",
+    "type": "java.lang.String",
+    "description": "A description for 'grpc.client.server.map'"
+  },
+  {
+    "name": "kafka.client.topic.map",
+    "type": "java.lang.String",
+    "description": "A description for 'kafka.client.topic.map'"
+  },
+  {
+    "name": "grpc.client.timeout.keep.alive",
+    "type": "java.lang.String",
+    "description": "A description for 'grpc.client.timeout.keep.alive'"
+  },
+  {
+    "name": "grpc.client.keep.alive",
+    "type": "java.lang.String",
+    "description": "A description for 'grpc.client.keep.alive'"
+  },
+  {
+    "name": "grpc.client.keep.alive",
+    "type": "java.lang.String",
+    "description": "A description for 'grpc.client.keep.alive'"
+  },
+  {
+    "name": "security.token.refresh.expiration.time",
+    "type": "java.lang.String",
+    "description": "A description for 'security.token.refresh.expiration.time'"
+  },
+  {
+    "name": "nfs.multipart.max.upload.byte",
+    "type": "java.lang.String",
+    "description": "A description for 'nfs.multipart.max.upload.byte'"
+  },
+  {
+    "name": "security.enable",
+    "type": "java.lang.String",
+    "description": "A description for 'security.enable'"
+  },
+  {
+    "name": "account.validation.path",
+    "type": "java.lang.String",
+    "description": "A description for 'account.validation.path'"
+  },
+  {
+    "name": "application.web.uri",
+    "type": "java.lang.String",
+    "description": "A description for 'application.web.uri'"
+  },
+  {
+    "name": "recovery.password.path",
+    "type": "java.lang.String",
+    "description": "A description for 'recovery.password.path'"
+  }
+]}

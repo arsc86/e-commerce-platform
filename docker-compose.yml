@@ -1,0 +1,54 @@
+#version: '3'
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:alpine
+    restart: always
+    networks:
+      - ecommerce
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    #healthcheck:
+    #  test: ["CMD-SHELL", "pg_isready -U keycloak"]
+    #  interval: 10s
+    #  retries: 5
+    ports:
+      - '5432:5432'
+
+
+  msa-service:
+    image: arsc86/e-commerce-msa-user:1.0
+    container_name: e-commerce-msa-user
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/db_user
+      SPRING_DATASOURCE_USERNAME: ecommerce_user
+      SPRING_DATASOURCE_PASSWORD: ecommerce
+    ports:  
+      - "8080:8080"
+      - "9090:9090"
+    depends_on:
+      - postgres
+    networks:
+      - ecommerce
+    volumes:
+      - ./compose-properties/msa-user-application.properties:/app/application.properties
+    pull_policy: always
+    #healthcheck:
+    #  test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+    #  interval: 30s          # Cada cuánto tiempo se realiza la comprobación
+    #  timeout: 10s           # Tiempo máximo para que responda
+    #  retries: 5             # Número de intentos antes de marcar como fallido
+    #  start_period: 10s
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  ecommerce:
+    driver: bridge
+    name: ecommerce

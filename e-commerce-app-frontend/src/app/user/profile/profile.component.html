@@ -1,0 +1,498 @@
+<div class="card">
+    <div class="flex align-items-center justify-content-between mb-0">
+        <h5>User Profile Information</h5>
+        <p-menu #menu [popup]="true" [model]="profileMenu"></p-menu>
+        <button pButton type="button" icon="pi pi-plus" class="p-button-text"
+                (click)="menu.toggle($event)"></button>
+    </div>   
+    <p-tabView orientation="left" (onChange)="onTabChange($event)">
+        <p-tabPanel header="Personal Information" class="line-height-3 m-0">
+            <div class="surface-section">    
+                <ul class="list-none p-0 m-0">
+                    <li *ngIf="false" class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <div class="text-500 w-6 md:w-2 font-medium">id</div>
+                        <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">{{user.id}}</div>                        
+                    </li>
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <div class="text-500 w-6 md:w-2 font-medium">
+                            <i class="pi pi-user mr-2"></i>Username
+                        </div>
+                        <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                            {{user.username}}
+                        </div>                        
+                    </li>
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <div class="text-500 w-6 md:w-2 font-medium">
+                            <i class="pi pi-id-card mr-2"></i>First Name
+                        </div>
+                        <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                            <span *ngIf="!editFirstNameValue">{{user.firstName}}</span>
+                            <input *ngIf="editFirstNameValue" pInputText id="firstname" type="text"
+                                    [(ngModel)]="firstNameEditValue" required=""/>
+                        </div>
+                        <div class="w-4 md:w-2 flex justify-content-end">
+                            <button *ngIf="!editFirstNameValue" pButton pRipple label="Edit" icon="pi pi-pencil" class="p-button-text" 
+                            (click)="editFirstNameValue = true; firstNameEditValue = user.firstName"></button>
+                            <button *ngIf="editFirstNameValue" pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" 
+                            (click)="editProfileInformation('firstName')" [disabled]="isEnable"></button>
+                            <button *ngIf="editFirstNameValue" pButton pRipple label="Close" icon="pi pi-times" class="p-button-text" 
+                            (click)="editFirstNameValue = false; firstNameEditValue = user.firstName"></button>
+                        </div>
+                    </li>
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <div class="text-500 w-6 md:w-2 font-medium">
+                            <i class="pi pi-id-card mr-2"></i>Last Name
+                        </div>
+                        <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                            <span *ngIf="!editLastNameValue">{{user.lastName}}</span>
+                            <input *ngIf="editLastNameValue" pInputText id="firstname" type="text"
+                                    [(ngModel)]="lastNameEditValue" required=""/>
+                        </div>
+                        <div class="w-4 md:w-2 flex justify-content-end">
+                            <button *ngIf="!editLastNameValue" pButton pRipple label="Edit" icon="pi pi-pencil" class="p-button-text" 
+                            (click)="editLastNameValue = true; lastNameEditValue = user.lastName"></button>
+                            <button *ngIf="editLastNameValue" pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" 
+                            (click)="editProfileInformation('lastName')" [disabled]="isEnable"></button>
+                            <button *ngIf="editLastNameValue" pButton pRipple label="Close" icon="pi pi-times" class="p-button-text" 
+                            (click)="editLastNameValue = false; lastNameEditValue = user.lastName"></button>
+                        </div>
+                    </li>
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <div class="text-500 w-6 md:w-2 font-medium">
+                            <i class="pi pi-envelope mr-2"></i>Email
+                        </div>
+                        <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                            <span *ngIf="!editEmailValue">{{user.profile.email}}</span>
+                            <input *ngIf="editEmailValue" pInputText id="firstname" type="text"
+                                    [(ngModel)]="emilEditValue" required=""/>
+                        </div>
+                        <div class="w-4 md:w-2 flex justify-content-end">
+                            <button *ngIf="!editEmailValue" pButton pRipple label="Edit" icon="pi pi-pencil" class="p-button-text" 
+                            (click)="editEmailValue = true; emilEditValue = user.profile.email"></button>
+                            <button *ngIf="editEmailValue" pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" 
+                            (click)="editProfileInformation('email')" [disabled]="isEnable"></button>
+                            <button *ngIf="editEmailValue" pButton pRipple label="Close" icon="pi pi-times" class="p-button-text" 
+                            (click)="editEmailValue = false; emilEditValue = user.profile.email"></button>
+                        </div>
+                    </li>
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <div class="text-500 w-6 md:w-2 font-medium">
+                            <i class="pi pi-calendar mr-2"></i>Birthday
+                        </div>
+                        <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                            <span *ngIf="!editBirthdayValue">{{user.profile.birthday}}</span>
+                            <p-calendar *ngIf="editBirthdayValue" inputId="calendar" [(ngModel)]="birthdayEditValue"
+                                        class="ng-invalid ng-dirty" [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+                        </div>
+                        <div class="w-4 md:w-2 flex justify-content-end">
+                            <button *ngIf="!editBirthdayValue" pButton pRipple label="Edit" icon="pi pi-pencil" class="p-button-text" 
+                            (click)="editBirthdayValue = true; birthdayEditValue = user.profile.birthday"></button>
+                            <button *ngIf="editBirthdayValue" pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" 
+                            (click)="editProfileInformation('birthday')" [disabled]="isEnable"></button>
+                            <button *ngIf="editBirthdayValue" pButton pRipple label="Close" icon="pi pi-times" class="p-button-text" 
+                            (click)="editBirthdayValue = false; birthdayEditValue = user.profile.birthday"></button>
+                        </div>
+                    </li>
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <div class="text-500 w-6 md:w-2 font-medium">
+                            <i class="pi pi-phone mr-2"></i>Phone
+                        </div>
+                        <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                            <span *ngIf="!editPhoneValue">{{user.profile.phone}}</span>
+                            <input *ngIf="editPhoneValue" pInputText inputId="inputnumber" [(ngModel)]="phoneEditValue" 
+                            class="ng-invalid ng-dirty" type="text" (keypress)="this.validateNumber($event)" />
+                        
+                        </div>
+                        <div class="w-4 md:w-2 flex justify-content-end">
+                            <button *ngIf="!editPhoneValue" pButton pRipple label="Edit" icon="pi pi-pencil" class="p-button-text" 
+                            (click)="editPhoneValue = true; phoneEditValue = user.profile.phone"></button>
+                            <button *ngIf="editPhoneValue" pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" 
+                            (click)="editProfileInformation('phone')" [disabled]="isEnable"></button>
+                            <button *ngIf="editPhoneValue" pButton pRipple label="Close" icon="pi pi-times" class="p-button-text" 
+                            (click)="editPhoneValue = false; phoneEditValue = user.profile.phone"></button>
+                        </div>
+                    </li>
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <div class="text-500 w-6 md:w-2 font-medium">
+                            <i class="pi pi-key mr-2"></i>Provider Code
+                        </div>
+                        <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">{{user.profile?.providerCode}}</div>                        
+                    </li>
+                </ul>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel header="Address Information" class="line-height-3 m-0">            
+            <button pButton type="button" icon="pi pi-plus" class="p-button-text"
+                (click)="enableAddressProfile=true;initializeUserAddress()">&nbsp;Add Address</button>
+            <br/>
+            <p-table #dt [value]="userAddresses" 
+                styleClass="p-datatable-gridlines"
+                [columns]="cols" 
+                responsiveLayout="scroll" 
+                [rows]="rows" 
+                [globalFilterFields]="['name','country.name','representative.name','status']" 
+                [paginator]="true" 
+                [rowsPerPageOptions]="rowsPerPageOptions" 
+                [showCurrentPageReport]="true" 
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [(selection)]="selectedUserAddresses" 
+                selectionMode="multiple" 
+                [rowHover]="true" dataKey="id"
+                [loading]="loading">
+
+                <ng-template pTemplate="header">
+                    <tr>                                        
+                        <th style="display: none;">id</th>
+                        <th>Region</th>                       
+                        <th>Country</th>                       
+                        <th>City</th>
+                        <th>Address</th>
+                        <th>Zipcode</th>
+                        <th>Coordinates</th>
+                        <th>Default</th>
+                        <th>Created At</th>
+                        <th>Updated At</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-address>
+                    <tr>
+                        <td style="min-width:10rem;" style="display: none;">                            
+                            {{address.id}}
+                        </td>
+                        <td style="min-width:12rem;">                           
+                            {{address.region}}
+                        </td>  
+                        <td style="min-width:10rem;">                            
+                            {{address.country}}
+                        </td>
+                        <td style="min-width:10rem;">
+                            <span class="p-column-title">City</span>
+                            {{address.city}}
+                        </td>  
+                        <td style="min-width:15rem;">
+                            <span class="p-column-title">Address</span>
+                            {{address.address}}
+                        </td>
+                        <td style="min-width:8rem;">
+                            <span class="p-column-title">Zipcode</span>
+                            {{address.zipcode}}
+                        </td> 
+                        <td style="min-width:10rem;">
+                            <span class="p-column-title">Coordinates</span>
+                            {{address.coordinates}}
+                        </td>  
+                        <td style="min-width:6rem;">
+                            <span class="p-column-title">Default</span>                          
+                            <span [class]="'status-badge status-' + (address.isDefault == 'Y' ? 'active' : 'base')">
+                                {{address.isDefault=='Y'?'YES':'NO'}}
+                            </span>
+                        </td>     
+                        <td style="min-width:12rem;">
+                            <span class="p-column-title">Created At</span>
+                            {{address.createdAt}}
+                        </td>
+                        <td style="min-width:12rem;">
+                            <span class="p-column-title">Updated At</span>
+                            {{address.updatedAt}}
+                        </td>                                          
+                        <td style="min-width: 8rem;">
+                            <span class="p-column-title">Status</span>
+                            <span [class]="'status-badge status-' + (address.status ? address.status.toLowerCase() : '')">
+                                {{address.status}}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" 
+                                        (click)="editProfileAddress(address)"
+                                        [disabled]="address.status !== 'active'"
+                                        *ngIf="address.status === 'active'">
+                                </button>
+                                <button pButton pRipple icon="pi pi-trash"  class="p-button-rounded p-button-warning" 
+                                        (click)="deleteProfileAddress(address);"
+                                        [disabled]="address.status === 'inactive'"
+                                        *ngIf="address.status !== 'inactive'">
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>    
+        </p-tabPanel>
+        <p-tabPanel header="Payment Methods" class="line-height-3 m-0">
+            <button pButton type="button" icon="pi pi-plus" class="p-button-text"
+                (click)="enablePaymentProfile=true;initializerUserPayment();isEditPaymentProfile=false">&nbsp;Add Payment Method</button>
+
+            <p-table #dt [value]="userPayments" 
+                styleClass="p-datatable-gridlines"
+                [columns]="cols" 
+                responsiveLayout="scroll" 
+                [rows]="rows"                
+                [paginator]="true" 
+                [rowsPerPageOptions]="rowsPerPageOptions" 
+                [showCurrentPageReport]="true" 
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [(selection)]="selectedUserPaymentMethod" 
+                selectionMode="multiple" 
+                [rowHover]="true" dataKey="id"
+                [loading]="loading">
+
+                <ng-template pTemplate="header">
+                    <tr>                                        
+                        <th style="display: none;">id</th>
+                        <th style="min-width: 8rem">Type</th>                       
+                        <th style="min-width: 10rem">Account Number</th>  
+                        <th style="min-width: 6rem">Default</th>                                            
+                        <th style="min-width: 12rem">Created At</th>
+                        <th style="min-width: 12rem">Updated At</th>
+                        <th style="min-width: 10rem">Status</th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-payment>
+                    <tr>
+                        <td style="min-width:10rem;" style="display: none;">                            
+                            {{payment.id}}
+                        </td>
+                        <td style="min-width:8rem;">                           
+                            {{payment.type}}
+                        </td>  
+                        <td style="min-width:10rem;">                            
+                            {{payment.accountNumber}}
+                        </td>                       
+                        <td style="min-width:6rem;">
+                            <span class="p-column-title">Default</span>                          
+                            <span [class]="'status-badge status-' + (payment.isDefault == 'Y' ? 'active' : 'base')">
+                                {{payment.isDefault=='Y'?'YES':'NO'}}
+                            </span>
+                        </td>     
+                        <td style="min-width:12rem;">
+                            <span class="p-column-title">Created At</span>
+                            {{payment.createdAt}}
+                        </td>
+                        <td style="min-width:12rem;">
+                            <span class="p-column-title">Updated At</span>
+                            {{payment.updatedAt}}
+                        </td>                                          
+                        <td style="min-width: 10rem;">
+                            <span class="p-column-title">Status</span>
+                            <span [class]="'status-badge status-' + (payment.status ? payment.status.toLowerCase() : '')">
+                                {{payment.status}}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" 
+                                        (click)="editProfilePayment(payment)"
+                                        [disabled]="payment.status !== 'active'"
+                                        *ngIf="payment.status === 'active'">
+                                </button>
+                                <button pButton pRipple icon="pi pi-trash"  class="p-button-rounded p-button-warning" 
+                                        (click)="deleteProfilePayment(payment)"
+                                        [disabled]="payment.status === 'inactive'"
+                                        *ngIf="payment.status !== 'inactive'">
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table> 
+        </p-tabPanel>
+    </p-tabView>
+</div>
+
+<p-dialog [(visible)]="enableAddressProfile" 
+            [style]="{width: '50vw'}"
+            header="Address Information" 
+            [modal]="true" class="p-fluid">
+    <ng-template pTemplate="content">    
+        <div class="col-12"> 
+        <div class="p-fluid p-formgrid grid">
+            <div class="field col-12 md:col-6">
+                <div class="field">
+                    <label for="region">Region</label>
+                    <p-dropdown [options]="regions" 
+                                [(ngModel)]="userAddress.region" placeholder="Select a Region" 
+                                [showClear]="true" required 
+                                (onChange)="onRegionChange($event)"
+                                [ngClass]="{'ng-invalid ng-dirty' :  !userAddress.region}"></p-dropdown>
+                    <small class="ng-dirty ng-invalid" *ngIf="!userAddress.region">Region is required.</small>
+                </div>
+            </div>
+            <div class="field col-12 md:col-6">
+                <div class="field">
+                    <label for="country">Country</label>
+                    <p-dropdown [disabled]="isEnableCountryDrop"  [options]="countries" 
+                                [(ngModel)]="userAddress.country" placeholder="Select a Country" 
+                                [showClear]="true" required 
+                                (onChange)="onCountryChange($event)"
+                                [ngClass]="{'ng-invalid ng-dirty' :  !userAddress.country}"></p-dropdown>
+                    <small class="ng-dirty ng-invalid" *ngIf="!userAddress.country">Country is required.</small>
+                </div>
+            </div>
+            <div class="field col-12 md:col-6">
+                <div class="field">
+                    <label for="city">City</label>
+                    <p-dropdown *ngIf="!isEnableCityText" [options]="cities" 
+                                [(ngModel)]="userAddress.city" placeholder="Select a City" 
+                                [showClear]="true" required 
+                                [disabled]="isEnableCityDrop"
+                                [ngClass]="{'ng-invalid ng-dirty' :  !userAddress.city}"></p-dropdown>
+                    <input *ngIf="isEnableCityText" type="text" pInputText id="address" [(ngModel)]="userAddress.city" required 
+                            [ngClass]="{'ng-invalid ng-dirty' :  !userAddress.city}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="!userAddress.city">City is required.</small>
+                </div>
+            </div>
+            <div class="field col-12 md:col-6">
+                <div class="field">
+                    <label for="address">Address</label>
+                    <input type="text" pInputText id="address" [(ngModel)]="userAddress.address" required 
+                            [ngClass]="{'ng-invalid ng-dirty' :  !userAddress.address}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="!userAddress.address">Address is required.</small>
+                </div>
+            </div>
+            <div class="field col-12 md:col-6">
+                <div class="field">
+                    <label for="zipcode">Zipcode</label>
+                    <input type="text" pInputText id="zipcode" [(ngModel)]="userAddress.zipcode" required 
+                            [ngClass]="{'ng-invalid ng-dirty' :  !userAddress.zipcode}"/>
+                    <small class="ng-dirty ng-invalid" *ngIf="!userAddress.zipcode">Zipcode is required.</small>
+                </div>
+            </div>
+            <div class="field col-12 md:col-6">
+                <div class="field">
+                    <label for="coordinates">Coordinates</label>
+                    <p-inputGroup>
+                        <button type="button" pButton icon="pi pi-map-marker" (click)="openMap()"></button>
+                        <input type="text" pInputText id="coordinates" 
+                                [(ngModel)]="userAddress.coordinates" required 
+                                [ngClass]="{'ng-invalid ng-dirty' :  !userAddress.coordinates}" readonly/>
+                    </p-inputGroup>
+                    <small class="ng-dirty ng-invalid" *ngIf="!userAddress.coordinates">Coordinates are required.</small>
+                </div>
+            </div>
+            <div class="field col-12 md:col-6">
+                <div class="field">
+                    <label for="isDefault">Default</label>
+                    <p-dropdown [options]="[{label: 'Yes', value: 'Y'}, {label: 'No', value: 'N'}]" 
+                                [(ngModel)]="userAddress.isDefault" placeholder="Select Default" required 
+                                [ngClass]="{'ng-invalid ng-dirty' :  !userAddress.isDefault}"></p-dropdown>
+                    <small class="ng-dirty ng-invalid" *ngIf="!userAddress.isDefault">Default is required.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    </ng-template>
+            
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" 
+                (click)="enableAddressProfile = false;
+                         isEnableCityDrop = false; 
+                         isEditAddressProfile = false;
+                         isSubmited=false;
+                         initializeUserAddress()"></button>
+        <button *ngIf="!isEditAddressProfile" pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" 
+                (click)="addProfileAddress()"
+                [disabled]="isSubmited"></button>
+        <button *ngIf="isEditAddressProfile" pButton pRipple label="Edit" icon="pi pi-check" class="p-button-text" 
+                (click)="addProfileAddress()"
+                [disabled]="isSubmited"></button>
+    </ng-template>
+</p-dialog>  
+
+<p-dialog [(visible)]="enablePaymentProfile" 
+          [style]="{width: '50vw'}"
+          header="Payment Method Information" 
+          [modal]="true" class="p-fluid">
+    <ng-template pTemplate="content">    
+        <div class="col-12"> 
+            <div class="p-fluid p-formgrid grid">
+                <div class="field col-12 md:col-6">
+                    <div class="field">
+                        <label for="type">Type</label>
+                        <p-dropdown [options]="paymentTypes" 
+                                    [(ngModel)]="userPayment.type" placeholder="Select a Type" 
+                                    [showClear]="true" required 
+                                    [ngClass]="{'ng-invalid ng-dirty' :  !userPayment.type}"></p-dropdown>
+                        <small class="ng-dirty ng-invalid" *ngIf="!userPayment.type">Type is required.</small>
+                    </div>
+                </div>
+                <div class="field col-12 md:col-6">
+                    <div class="field">
+                        <label for="accountNumber">Account Number</label> 
+                        <p-inputMask
+                            inputId="inputmask"
+                            mask="9999 9999 9999 9999"
+                            [(ngModel)]="userPayment.accountNumber">
+                        </p-inputMask>                                               
+                        <small class="ng-dirty ng-invalid" *ngIf="!userPayment.accountNumber">Account Number is required.</small>
+                    </div>
+                </div>
+                <div class="field col-12 md:col-6">
+                    <div class="field">
+                        <label for="expirationDate">Expiration Date</label>
+                        <p-inputMask
+                            inputId="inputmaskExp"
+                            mask="99/9999"
+                            [(ngModel)]="userPayment.expirationDate"
+                            [slotChar]="'mm/yyyy'"
+                            (onComplete)="validateExpirationDate()">
+                        </p-inputMask>
+                        <small class="ng-dirty ng-invalid" *ngIf="isValidExpirationDate">
+                            Invalid expiration date. Please enter a valid date in mm/yyyy format.
+                        </small>
+                        <small class="ng-dirty ng-invalid" *ngIf="!userPayment.expirationDate">Expiration Date is required.</small>
+                    </div>
+                </div>
+                <div class="field col-12 md:col-6">
+                    <div class="field">
+                        <label for="isDefault">Default</label>
+                        <p-dropdown [options]="[{label: 'Yes', value: 'Y'}, {label: 'No', value: 'N'}]" 
+                                    [(ngModel)]="userPayment.isDefault" placeholder="Select Default" required 
+                                    [ngClass]="{'ng-invalid ng-dirty' :  !userPayment.isDefault}"></p-dropdown>
+                        <small class="ng-dirty ng-invalid" *ngIf="!userPayment.isDefault">Default is required.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+            
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" 
+                (click)="enablePaymentProfile = false;isEditPaymentProfile=false;"></button>
+        <button *ngIf="!isEditPaymentProfile" pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" 
+                (click)="addPaymentMethod()"
+                [disabled]="isSubmited"></button>
+        <button *ngIf="isEditPaymentProfile" pButton pRipple label="Edit" icon="pi pi-check" class="p-button-text" 
+                (click)="addPaymentMethod()"
+                [disabled]="isSubmited"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="deleteDialog" header="Confirm" 
+            [modal]="true" 
+            [style]="{width:'450px'}">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span >Are you sure you want to delete the register?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" 
+                (click)="deleteDialog=false"></button>
+        <button *ngIf="isDeleteAddressProfile" pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" 
+                (click)="confirmDeleteProfileAddress()"></button>
+        <button *ngIf="isDeletePaymentProfile" pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" 
+                (click)="confirmDeleteProfilePayment()"></button>
+    </ng-template>
+</p-dialog> 
+
+<p-dialog [(visible)]="viewMap" header="Coordinates" [modal]="true" [style]="{width:'800px'}">
+    <google-map width="100%" height="400px" [center]="center" [zoom]="zoom" (mapClick)="onMapClick($event)">
+        <map-marker *ngIf="selectedLocation" [position]="selectedLocation"></map-marker>
+    </google-map>
+</p-dialog> 
+
+
+

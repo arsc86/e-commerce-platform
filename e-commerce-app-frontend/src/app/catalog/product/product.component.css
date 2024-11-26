@@ -1,0 +1,79 @@
+::ng-deep .small-text-table td,
+::ng-deep .small-text-table th {
+  font-size: 0.85rem; /* más pequeño que el default */
+}
+
+/* Aplica altura mínima a las filas */
+.compact-table .p-row {
+    height: 2rem !important;
+}
+
+/* Reduce padding de celdas */
+.compact-table .p-cell {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+}
+
+/* Si hay inputs o dropdowns dentro de las celdas, reducir su altura */
+.compact-table input.p-inputtext,
+.compact-table .p-dropdown {
+    height: 1.5rem !important; /* ajusta según necesites */
+    font-size: 0.85rem; /* opcional: texto más pequeño */
+}
+
+.image-container {
+  width: 100%;
+  height: 120px; /* altura fija */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px dashed #ccc; /* opcional */
+}
+
+.image-container img {
+  max-width: 80%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.full-width {
+  width: 100%;
+}
+
+:host ::ng-deep .p-dropdown,
+:host ::ng-deep .p-inputtext,
+:host ::ng-deep textarea {
+  width: 100% !important;
+}
+
+.file{
+  max-width: 60px; 
+  max-height: 60px; 
+  border-radius: 4px; 
+  border: 1px solid #ccc; 
+  margin-right: 8px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+}
+
+.field label {
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.field input, .field textarea, .field p-dropdown {
+    width: 100%;
+}
+
+.full-width {
+    width: 100%;
+}
