@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:alpine
+    restart: always
+    networks:
+      - ecommerce
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    #healthcheck:
+    #  test: ["CMD-SHELL", "pg_isready -U keycloak"]
+    #  interval: 10s
+    #  retries: 5
+    ports:
+      - '5432:5432'
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  ecommerce:
+    driver: bridge
+    name: ecommerce
